@@ -21,6 +21,9 @@
 		            Emitir Video
 		        </h3>
 		    </div>
+			<div class="select">
+				<label for="videoSource">Video source: </label><select id="videoSource"></select>
+			</div>
 		    <div data-role="content">
 				<video id = "video" autoplay="true" style="width: 680px; heigth: 320px;"></video>
 				<div id = "logger"></div>
@@ -35,66 +38,73 @@
 		    var logger = document.getElementById('logger');
 		    var canvas = document.createElement('canvas');
 		    var context = canvas.getContext('2d');
+			var videoSelect = document.querySelector('select#videoSource');
+			var videoSource = videoSelect.value;
 		    context.width = 680;
 		    context.height = 510;
 
+			function gotSources(sourceInfos) {
+				for (var i = 0; i !== sourceInfos.length; ++i) {
+					var sourceInfo = sourceInfos[i];
+					var option = document.createElement('option');
+					option.value = sourceInfo.id;
+					if (sourceInfo.kind === 'video') {
+						option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+						videoSelect.appendChild(option);
+					} else {
+						console.log('Some other kind of source: ', sourceInfo);
+					}
+				}
+			}
+
+			if (typeof MediaStreamTrack === 'undefined' ||
+					typeof MediaStreamTrack.getSources === 'undefined') {
+				alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+			} else {
+				MediaStreamTrack.getSources(gotSources);
+			}
 
 			function log(message) {
 		       logger.innerHTML = logger.innerHTML + message + "<br/>";
 		    };
 
-			//console.log(navigator.getUserMedia('video'));
-
-			/*navigator.getUserMedia(function (err, stream) {
-				// if the browser doesn't support user media
-				// or the user says "no" the error gets passed
-				// as the first argument.
-				if (err) {
-					log('Error broadcasting: ' + error.code );
-					console.log('failed');
-				} else {
-					console.log('got a stream', stream);
-					log('Broadcasting...');
-					video.src = stream;
-				}
-			});*/
-
-
-			/*navigator.getUserMedia(function(successCallback, errorCallback);
-
-		        function successCallback( stream ) {
-
-		        };
-
-		        function errorCallback( error ) {
-
-		        };*/
+			MediaStreamTrack.getSources(gotSources);
 
 			navigator.getMedia = ( navigator.getUserMedia ||
 			navigator.webkitGetUserMedia ||
 			navigator.mozGetUserMedia ||
 			navigator.msGetUserMedia);
 
-			navigator.getMedia (
 
-					// Restricciones (contraints) *Requerido
-					{
-						video: true,
-						//audio: true
-					},
+			function successCallback(stream) {
+				var video = document.querySelector('video');
+				video.src = window.URL.createObjectURL(stream);
+			}
 
-					// Funcion de finalizacion (Succes-Callback) *Requerido
-					function(localMediaStream) {
-						var video = document.querySelector('video');
-						video.src = window.URL.createObjectURL(localMediaStream);
-					},
+			function errorCallback(error) {
+				console.log('navigator.getUserMedia error: ', error);
+			}
 
-					// errorCallback *Opcional
-					function(err) {
-						console.log("Ocurrió el siguiente error: " + err);
+			function start() {
+				if (window.stream) {
+					videoElement.src = null;
+					window.stream.stop();
+				}
+				var videoSource = videoSelect.value;
+				var constraints = {
+
+					video: {
+						optional: [{
+							sourceId: videoSource
+						}]
 					}
+				};
+				navigator.getMedia(constraints, successCallback, errorCallback);
+			}
+			videoSelect.onchange = start;
+			start();
 
-			);
+
 
 
 		    /* SOCKET.IO */
@@ -123,6 +133,7 @@
 		    }
 
 		    setInterval(function() { sendFrame(video, context); }, 100);
+
 
 		</script>
 
