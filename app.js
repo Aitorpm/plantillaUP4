@@ -4,6 +4,14 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , streamingService = require('./lib/service/streamingService');
+var fs = require('fs');
+var https = require('https');
+var key = fs.readFileSync('./cert/privkey.pem');
+var cert = fs.readFileSync('./cert/fullchain.pem');
+var https_options = {
+  key: key,
+  cert: cert
+};
 
 var io = require('socket.io');
 var server;
@@ -27,7 +35,7 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-server = http.createServer(app).listen(app.get('port'), function(){
+server = https.createServer(https_options,app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 

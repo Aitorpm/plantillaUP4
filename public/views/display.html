@@ -3,10 +3,11 @@
 	<head>
 		<title>Visualizar Video</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1"> 
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>	
+		<link rel="stylesheet" href="//code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+		<script src="//code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="//code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+		<script src="/public/js/adapter.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBBboqOwLt3WKb7eod6a9MbVChHGF64Zs"></script>
 	</head>
 
@@ -48,7 +49,7 @@
 
 		    /* SOCKET.IO */
 
-		    var socket = io.connect('http://192.168.0.108:5000');
+		    var socket = io.connect('https://bip05.upc.es:5000');
 
 		    socket.on('connect', function () {
 		    	log('connected');
