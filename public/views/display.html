@@ -4,6 +4,7 @@
 		<title>Visualizar Video</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1"> 
 		<link rel="stylesheet" href="//code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+		<link rel="stylesheet" href="../stylesheets/chat.css">
 		<script src="//code.jquery.com/jquery-1.8.2.min.js"></script>
 		<script src="//code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -23,17 +24,49 @@
 		            Visualizar Video
 		        </h3>
 		    </div>
-		    <div data-role="content">
-				<img src="" id="frame" style="width:660px; height:490px"/>
-				<div id="logger"></div>
-				<div id="map" style="width:680px;height:510px"></div>
-		    </div>
+			<table>
+				<tr>
+					<td>
+						<div id="map" style="width:600px;height:600px;"></div>
+					</td>
 
+					<td>
+						<img src="" id="frame" style="width:200px; height:200px"/>
+						<div id="logger">ESTADO: </div>
+						<br>
+						<div>
+							<div id="chatscroll" style="width: 600px; height: 300px; overflow-y: scroll; border: 1px solid grey; border-radius: 10px;" >
+								<div  class="media msg" id="chat">
+
+									<!--<div ng-if="msg.sender==you">
+										<div class="bubble me">
+											{{msg.text}}
+										</div>
+									</div>-->
+								</div>
+							</div>
+
+							<div>
+								<table class="table">
+									<thead>
+									<tr>
+										<td>Escribe un mensage:</td>
+										<td><input class="form-control" id="text"></td>
+										<td><button class="btn btn-primary" onclick="refresh()">Enviar</button></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
 		</div>
 
 
 
 		<script type="text/javascript">
+			var msgs = [];
 			var route = [];
 			var markers = [];
 			var img = document.getElementById("frame");
@@ -44,6 +77,38 @@
 						mapTypeId: google.maps.MapTypeId.ROADMAP
 					});
 
+			function refresh() {
+				$('#chat').append("<div class='bubble you'>" +  $('#text').val() + "</div>"
+				+ "<div style='clear:both;'></div>");
+
+				var scroller = document.getElementById('chatscroll');
+				scroller.scrollTop=scroller.scrollHeight;
+
+			}
+
+			$(document).keydown(function(e) {
+				console.log(e);
+				var keyCode = e.keyCode;
+
+				if(keyCode == 37){
+					$('#chat').append("<div class='bubble you'> Ir a la izquierda </div><div style='clear:both;'></div>");
+				}
+				if(keyCode == 38){
+					$('#chat').append("<div class='bubble you'> Seguir recto </div><div style='clear:both;'></div>");
+				}
+				if(keyCode == 39){
+					$('#chat').append("<div class='bubble you'> Ir a la derecha  </div><div style='clear:both;'></div>");
+				}
+				if(keyCode == 40){
+					$('#chat').append("<div class='bubble you'> Dar media vuelta </div><div style='clear:both;'></div>");
+				}
+				if(keyCode == 32){
+					$('#chat').append("<div class='bubble you'> Parar! </div><div style='clear:both;'></div>");
+				}
+
+				var scroller = document.getElementById('chatscroll');
+				scroller.scrollTop=scroller.scrollHeight;
+			});
 
 
 
@@ -86,7 +151,7 @@
 				});
 				markers.push(marker);
 				marker.setMap(map);
-			})
+			});
 
 
 		    /* END SOCKET.IO */

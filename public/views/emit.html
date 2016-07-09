@@ -11,8 +11,6 @@
 	</head>
 
 	<body>
-
-
 		<div data-role="page" id="page1">
 		    <div data-theme="a" data-role="header">
 		        <a data-role="button" href="../index.html" class="ui-btn-left" data-ajax="false">
@@ -152,7 +150,8 @@
 
 		    /* SOCKET.IO */
 
-		    var socket = io.connect('https://bip05.upc.es:5000');
+		    //var socket = io.connect('https://bip05.upc.es:5000');
+			var socket = io.connect('https://localhost:5000');
 
 			console.log("sockets")
 		    socket.on('connect', function () {
