@@ -61,13 +61,13 @@ test = function(req,res) {
     console.log(req.body);
     res.send('OK');
     io.sockets.emit('coords',req.body);
-}
+};
 
 postdirection = function (req,res) {
   console.log(req.body);
   console.log(req.body.message);
   srt.push(req.body.message);
-}
+};
 
 getDirection = function (req,res){
   if(srt.length>0){
@@ -75,13 +75,13 @@ getDirection = function (req,res){
     srt.length=0;
   }
   else res.send();
-}
+};
 
 postfromapp = function (req,res){
   console.log(req.body);
   console.log(req.body.message);
   io.sockets.emit('chat',req.body.message);
-}
+};
 
 
 
