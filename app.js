@@ -65,6 +65,9 @@ test = function(req,res) {
 
 
 
+
+
 app.get('/', routes.index);
 app.post('/test',test);
+app.get('/getdirection',routes.getDirection);
 //streamingService.start(server);
