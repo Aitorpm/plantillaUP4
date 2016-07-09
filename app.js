@@ -16,6 +16,7 @@ var https_options = {
 var io = require('socket.io');
 var server;
 var clients = [];
+var srt=[];
 
 var app = express();
 
@@ -62,6 +63,26 @@ test = function(req,res) {
     io.sockets.emit('coords',req.body);
 }
 
+postdirection = function (req,res) {
+  console.log(req.body);
+  console.log(req.body.message);
+  srt.push(req.body.message);
+}
+
+getDirection = function (req,res){
+  if(srt.length>0){
+    res.send(srt[srt.length-1]);
+    srt.length=0;
+  }
+  else res.send();
+}
+
+postfromapp = function (req,res){
+  console.log(req.body);
+  console.log(req.body.message);
+  io.sockets.emit('chat',req.body);
+}
+
 
 
 
@@ -69,5 +90,6 @@ test = function(req,res) {
 
 app.get('/', routes.index);
 app.post('/test',test);
-app.get('/getdirection',routes.getDirection);
+app.get('/getdirection',getDirection);
+app.post('/chat/postdirection',postdirection);
 //streamingService.start(server);
