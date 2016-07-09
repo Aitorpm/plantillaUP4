@@ -80,7 +80,7 @@ getDirection = function (req,res){
 postfromapp = function (req,res){
   console.log(req.body);
   console.log(req.body.message);
-  io.sockets.emit('chat',req.body);
+  io.sockets.emit('chat',req.body.message);
 }
 
 
