@@ -23,9 +23,9 @@ exports.postdirection = function (req,res) {
 }
 
 exports.getDirection = function (req,res){
-  var srt = {
-    test: "hola",
-    test2: "mundo"
+  var srt = ['hola'];
+  if(srt.length>0){
+    res.send(srt[srt.length-1]);
   }
-  res.send(srt);
+  else res.send();
 }
