@@ -90,6 +90,8 @@ $(document).ready(function() {
 
     //Recibir el streaming de video
     socket.on('data', function (data) {
+        img.height(200);
+        img.width(200);
         img.src = data;
     });
 
