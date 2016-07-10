@@ -11,6 +11,12 @@ $(document).ready(function() {
     context.width = 680;
     context.height = 510;
 
+    //Mi estado conectado o desconectado
+    function log(message) {
+        logger.innerHTML = logger.innerHTML + message + "<br/>";
+    }
+
+    //Coger la camara frontal del teléfono
     function gotDevices(deviceInfos) {
         // Handles being called several times to update labels. Preserve values.
         var values = selectors.map(function (select) {
@@ -50,10 +56,7 @@ $(document).ready(function() {
         return navigator.mediaDevices.enumerateDevices();
     }
 
-    function log(message) {
-        logger.innerHTML = logger.innerHTML + message + "<br/>";
-    };
-
+    //Mostrar el streaming en el dispositivo (Para todos los videos que estan corriendo y solo muestra el seleccionado)
     function start() {
         if (window.stream) {
             window.stream.getTracks().forEach(function (track) {
@@ -72,18 +75,27 @@ $(document).ready(function() {
 
     start();
 
+    //Mostrar por consola si hay algun error
     function handleError(error) {
         console.log('navigator.getUserMedia error: ', error);
     }
 
+    //Enviar por streaming el video a la otra web
+    function sendFrame(video, context) {
+        context.drawImage(video, 0, 5, 200, 200);
+        emit(canvas.toDataURL('image/webp'));
+    }
+
+    //Configurar el intervalo de imagenes por segundo
+    setInterval(function () {
+        sendFrame(video, context);
+    }, 100);
 
     /* SOCKET.IO */
 
     var socket = io.connect('https://bip05.upc.es:5000');
 
-    console.log("sockets")
     socket.on('connect', function () {
-        console.log("sockets2")
         log('connected');
     });
 
@@ -96,14 +108,4 @@ $(document).ready(function() {
     }
 
     /* END SOCKET.IO */
-
-//en
-    function sendFrame(video, context) {
-        context.drawImage(video, 0, 5, 200, 200);
-        emit(canvas.toDataURL('image/webp'));
-    }
-
-    setInterval(function () {
-        sendFrame(video, context);
-    }, 100);
 });

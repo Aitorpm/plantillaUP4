@@ -3,13 +3,18 @@
  */
 $(document).ready(function() {
     var url = 'https://bip05.upc.es:5000';
-    var msgs = [];
     var route = [];
     var markers = [];
     var img = document.getElementById("frame");
     var logger = document.getElementById('logger');
     var map;
 
+    //Mi estado conectado o desconectado
+    function log(message) {
+        if (logger != null) logger.innerHTML = logger.innerHTML + message + "<br/>";
+    }
+
+    //Iniciar el mapa
     function initialize() {
         map = new google.maps.Map(document.getElementById("map"),
             {
@@ -17,20 +22,31 @@ $(document).ready(function() {
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });
     }
-
     google.maps.event.addDomListener(window, 'load', initialize);
 
-    function refresh() {
-        $('#chat').append("<div class='bubble you'>" + $('#text').val() + "</div>"
-            + "<div style='clear:both;'></div>");
 
-        $('#text').val('');
+    //Enviar un mensage
+    function refresh() {
+        var msg = $('#text').val();
+        $('#chat').append("<div class='bubble you'>" + msg + "</div>"
+            + "<div style='clear:both;'></div>");
 
         var scroller = document.getElementById('chatscroll');
         scroller.scrollTop = scroller.scrollHeight;
 
+        $.ajax({
+            type: "POST",
+            url: url + "/chat/postdirection",
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8", // this is the default value, so it's optional
+            data: {
+                "message": msg
+            }
+        }, function(){
+            $('#text').val('');
+        });
     }
 
+    //Enviar una orden
     $(document).keydown(function (e) {
         var keyCode = e.keyCode;
         var msg;
@@ -60,31 +76,33 @@ $(document).ready(function() {
 
 
     /* SOCKET.IO */
-
     var socket = io.connect(url);
 
+    //Conectarse al servidor de SOCKETS
     socket.on('connect', function () {
         log('connected');
     });
 
+    //Desconectarse del servidor de SOCKETS
     socket.on('disconnect', function () {
         log('disconnected');
     });
 
+    //Recibir el streaming de video
     socket.on('data', function (data) {
         img.src = data;
     });
 
+    //Recibir las coordenadas GPS
     socket.on('coords', function (data) {
-        console.log('coords');
-        console.log(data);
         for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(null);
         }
         markers.length = 0;
         route.push(new google.maps.LatLng(data.latitude, data.longitude));
-        console.log(route);
+
         map.setCenter(new google.maps.LatLng(data.latitude, data.longitude));
+
         var path = new google.maps.Polyline(
             {
                 path: route,
@@ -100,13 +118,10 @@ $(document).ready(function() {
         marker.setMap(map);
     });
 
+    //Recibir mensages
     socket.on('chat', function (data) {
         if (data !== "undefined") $('#chat').append("<div class='bubble me'>" + data + "</div><div style='clear:both;'></div>");
     });
 
     /* END SOCKET.IO */
-
-    function log(message) {
-        if (logger != null) logger.innerHTML = logger.innerHTML + message + "<br/>";
-    }
 });
