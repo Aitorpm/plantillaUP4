@@ -67,6 +67,7 @@ postdirection = function (req,res) {
   console.log(req.body);
   console.log(req.body.message);
   srt.push(req.body.message);
+  res.end();
 };
 
 getDirection = function (req,res){
@@ -75,6 +76,7 @@ getDirection = function (req,res){
   if(srt.length>0){
     console.log(srt[srt.length-1]);
     res.send(srt[srt.length-1]);
+    res.end();
     srt=[];
     console.log(srt);
   }
