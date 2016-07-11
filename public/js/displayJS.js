@@ -124,7 +124,12 @@ $(document).ready(function() {
 
     //Recibir mensages
     socket.on('chat', function (data) {
-        if (data !== "undefined") $('#chat').append("<div class='bubble me'>" + data + "</div><div style='clear:both;'></div>");
+        if (data !== "undefined"){ 
+		$('#chat').append("<div class='bubble me'>" + data + "</div><div style='clear:both;'></div>");
+		var scroller = document.getElementById('chatscroll');
+        	scroller.scrollTop = scroller.scrollHeight;    
+	}
+	
     });
 
     /* END SOCKET.IO */
