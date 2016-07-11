@@ -2,7 +2,7 @@
  * Created by aitor on 10/7/16.
  */
 $(document).ready(function() {
-    var url = 'https://bip05.upc.es:5000';
+    var url = 'https://localhost:5000';
     var route = [];
     var markers = [];
     var img = document.getElementById("frame");
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 
     //Enviar un mensage
-    function refresh() {
+    $('#send').click(function refresh() {
         var msg = $('#text').val();
         $('#chat').append("<div class='bubble you'>" + msg + "</div>"
             + "<div style='clear:both;'></div>");
@@ -41,10 +41,10 @@ $(document).ready(function() {
             data: {
                 "message": msg
             }
-        }, function(){
+        }).done(function(){
             $('#text').val('');
         });
-    }
+    });
 
     //Enviar una orden
     $(document).keydown(function (e) {
@@ -59,19 +59,21 @@ $(document).ready(function() {
 
         if (typeof msg != 'undefined') {
             $('#chat').append("<div class='bubble you'>" + msg + "</div><div style='clear:both;'></div>");
+
+            $.ajax({
+                type: "POST",
+                url: url + "/chat/postdirection",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8", // this is the default value, so it's optional
+                data: {
+                    "message": msg
+                }
+            });
         }
 
         var scroller = document.getElementById('chatscroll');
         scroller.scrollTop = scroller.scrollHeight;
 
-        $.ajax({
-            type: "POST",
-            url: url + "/chat/postdirection",
-            contentType: "application/x-www-form-urlencoded; charset=UTF-8", // this is the default value, so it's optional
-            data: {
-                "message": msg
-            }
-        });
+
     });
 
 

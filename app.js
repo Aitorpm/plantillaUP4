@@ -15,10 +15,13 @@ var https_options = {
 
 var io = require('socket.io');
 var server;
+var server2;
 var clients = [];
 var srt=[];
 
 var app = express();
+
+var app2 = express();
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
@@ -32,13 +35,34 @@ app.configure(function(){
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
+app2.configure(function(){
+  app2.set('port', process.env.PORT || 5001);
+  app2.set('views', __dirname + '/views');
+  app2.set('view engine', 'jade');
+  app2.use(express.favicon());
+  app2.use(express.logger('dev'));
+  app2.use(express.bodyParser());
+  app2.use(express.methodOverride());
+  app2.use(app.router);
+  app2.use(express.static(path.join(__dirname, 'public')));
+});
+
 app.configure('development', function(){
   app.use(express.errorHandler());
+});
+
+app2.configure('development', function(){
+  app2.use(express.errorHandler());
 });
 
 server = https.createServer(https_options,app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+server2 = http.createServer(app2).listen(app2.get('port'),function () {
+  console.log('server http operative on port 5001');
+
+})
 
 
 
@@ -98,4 +122,5 @@ app.get('/', routes.index);
 app.post('/test',test);
 app.get('/getdirection',getDirection);
 app.post('/chat/postdirection',postdirection);
+app.post('/chat/app/postmessage',postfromapp);
 //streamingService.start(server);
