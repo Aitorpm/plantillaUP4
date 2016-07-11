@@ -55,7 +55,7 @@ $(document).ready(function() {
         if (keyCode == 38) msg = "Seguir recto";
         if (keyCode == 39) msg = "Ir a la derecha";
         if (keyCode == 40) msg = "Dar media vuelta ";
-        if (keyCode == 32) msg = "Parar!";
+        if (keyCode == 17) msg = "Parar!";
 
         if (typeof msg != 'undefined') {
             $('#chat').append("<div class='bubble you'>" + msg + "</div><div style='clear:both;'></div>");
