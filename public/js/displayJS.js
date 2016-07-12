@@ -51,11 +51,11 @@ $(document).ready(function() {
         var keyCode = e.keyCode;
         var msg;
 
-        if (keyCode == 37) msg = "Ir a la izquierda";
-        if (keyCode == 38) msg = "Seguir recto";
-        if (keyCode == 39) msg = "Ir a la derecha";
-        if (keyCode == 40) msg = "Dar media vuelta ";
-        if (keyCode == 17) msg = "Parar!";
+        if (keyCode == 37) msg = "";
+        if (keyCode == 38) msg = "";
+        if (keyCode == 39) msg = "";
+        if (keyCode == 40) msg = "";
+        if (keyCode == 17) msg = "";
 
         if (typeof msg != 'undefined') {
             $('#chat').append("<div class='bubble you'>" + msg + "</div><div style='clear:both;'></div>");
@@ -124,12 +124,11 @@ $(document).ready(function() {
 
     //Recibir mensages
     socket.on('chat', function (data) {
-        if (data !== "undefined"){ 
-		$('#chat').append("<div class='bubble me'>" + data + "</div><div style='clear:both;'></div>");
-		var scroller = document.getElementById('chatscroll');
-        	scroller.scrollTop = scroller.scrollHeight;    
-	}
-	
+        if (data !== "undefined") {
+            $('#chat').append("<div class='bubble me'>" + data + "</div><div style='clear:both;'></div>");
+            var scroller = document.getElementById('chatscroll');
+            scroller.scrollTop = scroller.scrollHeight;
+        }
     });
 
     /* END SOCKET.IO */

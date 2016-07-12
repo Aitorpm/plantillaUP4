@@ -113,7 +113,9 @@ postfromapp = function (req,res){
   io.sockets.emit('chat',req.body.message);
 };
 
-
+hello = function (req, res) {
+  res.send('Hola mundo!');
+}
 
 
 
@@ -123,4 +125,5 @@ app.post('/test',test);
 app.get('/getdirection',getDirection);
 app.post('/chat/postdirection',postdirection);
 app.post('/chat/app/postmessage',postfromapp);
+app.get('/hello', hello);
 //streamingService.start(server);

@@ -96,11 +96,11 @@ $(document).ready(function() {
     var socket = io.connect('https://eetacea0.upc.es:5000');
 
     socket.on('connect', function () {
-        log('connected');
+        log('');
     });
 
     socket.on('disconnect', function () {
-        log('disconnected');
+        log('');
     });
 
     function emit(message) {
